@@ -25,7 +25,7 @@ class ProductController extends AbstractController
         try {
             $productService->validate($request);
             $data = $productService->create($request)->toArray();
-            $status = JsonResponse::HTTP_OK;
+            $status = JsonResponse::HTTP_CREATED;
         } catch (ProductServiceValidationException $e) {
             $status = JsonResponse::HTTP_BAD_REQUEST;
             $data = [
@@ -41,7 +41,7 @@ class ProductController extends AbstractController
             $data = [
                 'title' => 'Internal Server Error',
                 'status' => $status,
-                'detail' => 'dev' === $_SERVER['APP_ENV'] ? $e->getMessage() : 'Internal Server Error',
+                'detail' => \in_array($_SERVER['APP_ENV'], ['dev', 'test'], true) ? $e->getMessage() : 'Internal Server Error',
             ];
         }
 

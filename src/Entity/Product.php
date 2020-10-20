@@ -17,17 +17,17 @@ class Product implements ProductInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private ?int $id;
+    protected ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private ?string $name;
+    private ?string $name = null;
 
     /**
      * @ORM\Column(type="float")
      */
-    private ?float $price;
+    private ?float $price = null;
 
     public function getId(): ?int
     {
