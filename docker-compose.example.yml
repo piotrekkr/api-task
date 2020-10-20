@@ -4,14 +4,11 @@ services:
     php:
         build:
             context: .
-        working_dir: /usr/src/app
         command: ['php', '-S', '0:8888', '-t', 'public/']
         ports:
             - "8888:8888"
 #        volumes:
 #            - ".:/usr/src/app"
-        environment:
-            DOMAIN_NAME: default:api-task.docker
 
     db:
         image: postgres:12.0
