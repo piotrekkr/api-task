@@ -1,15 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Storage;
-
 
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ProductStorage implements ProductStorageInterface
 {
-
     private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
@@ -21,8 +20,7 @@ class ProductStorage implements ProductStorageInterface
     {
         $this->entityManager->persist($product);
         $this->entityManager->flush();
+
         return $product;
     }
-
-
 }

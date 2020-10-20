@@ -1,0 +1,27 @@
+<?php
+
+$finder = PhpCsFixer\Finder::create()
+    ->exclude('vendor')
+    ->exclude('var')
+    ->in(__DIR__);
+
+return PhpCsFixer\Config::create()
+    ->setRules([
+        '@PSR2' => true,
+        '@PhpCsFixer' => true,
+        '@Symfony' => true,
+        'declare_strict_types' => true,
+        'php_unit_strict' => true,
+        'strict_param' => true,
+        'array_syntax' => ['syntax' => 'short'],
+        'php_unit_test_class_requires_covers' => false,
+        'blank_line_before_statement' => true,
+        'native_function_invocation' => true,
+        'native_constant_invocation' => [
+            'exclude' => ['null', 'false', 'true'],
+            'fix_built_in' => true,
+            'include' => [],
+            'scope' => 'all'
+        ]
+    ])
+    ->setFinder($finder);

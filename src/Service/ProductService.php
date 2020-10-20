@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
-
 
 use App\Entity\Product;
 use App\Storage\ProductStorageException;
@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ProductService implements ProductServiceInterface
 {
-
     private ProductStorageInterface $storage;
 
     public function __construct(ProductStorageInterface $productStorage)
@@ -23,7 +22,7 @@ class ProductService implements ProductServiceInterface
     {
         $price = $request->get('price');
         $name = $request->get('name');
-        if (null === $price || '' === $price || !is_numeric($price) || (float) $price <= 0) {
+        if (null === $price || '' === $price || !\is_numeric($price) || (float) $price <= 0) {
             throw new ProductServiceValidationException('Invalid price, should be greater than 0');
         }
         if (null === $name || '' === $name) {
