@@ -27,7 +27,7 @@ class CreateProductTest extends WebTestCase
         self::assertArrayHasKey('id', $json);
         self::assertArrayHasKey('name', $json);
         self::assertArrayHasKey('price', $json);
-        self::assertSame(1, $json['id']);
+        self::assertSame('1', $json['id']);
         self::assertSame('test', $json['name']);
         self::assertSame(10.2, $json['price']);
     }

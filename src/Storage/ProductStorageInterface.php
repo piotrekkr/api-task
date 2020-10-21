@@ -10,8 +10,6 @@ interface ProductStorageInterface
 {
     /**
      * @throws ProductStorageException
-     *
-     * @return Product persisted product instance
      */
-    public function persist(Product $product): Product;
+    public function persist(Product $product): string;
 }

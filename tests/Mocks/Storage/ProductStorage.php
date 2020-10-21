@@ -9,17 +9,8 @@ use App\Storage\ProductStorageInterface;
 
 class ProductStorage implements ProductStorageInterface
 {
-    public function persist(Product $product): Product
+    public function persist(Product $product): string
     {
-        $productWithId = new class() extends Product {
-            public function __construct()
-            {
-                $this->id = 1;
-            }
-        };
-        $productWithId->setPrice($product->getPrice());
-        $productWithId->setName($product->getName());
-
-        return $productWithId;
+        return '1';
     }
 }

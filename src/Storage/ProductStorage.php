@@ -16,13 +16,13 @@ class ProductStorage implements ProductStorageInterface
         $this->entityManager = $entityManager;
     }
 
-    public function persist(Product $product): Product
+    public function persist(Product $product): string
     {
         try {
             $this->entityManager->persist($product);
             $this->entityManager->flush();
 
-            return $product;
+            return (string) $product->getId();
         } catch (\Throwable $e) {
             throw new ProductStorageException('Error while storing product: '.$e->getMessage(), 0, $e);
         }

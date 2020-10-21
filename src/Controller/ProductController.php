@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Dto\ProductDto;
 use App\Service\Product\ProductService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,6 +20,6 @@ class ProductController extends AbstractController
         Request $request,
         ProductService $productService
     ): JsonResponse {
-        return $productService->create($request);
+        return $productService->create(ProductDto::createFromRequest($request));
     }
 }

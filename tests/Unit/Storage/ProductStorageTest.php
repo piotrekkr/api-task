@@ -19,6 +19,16 @@ class ProductStorageTest extends TestCase
     /**
      * @test
      */
+    public function shouldReturnProductIdentifier(): void
+    {
+        $storage = new ProductStorage($this->getEntityManagerMock());
+        $productIdentifier = $storage->persist(new Product());
+        self::assertSame('1', $productIdentifier);
+    }
+
+    /**
+     * @test
+     */
     public function shouldThrowExceptionOnManagerFailure(): void
     {
         $this->expectException(ProductStorageException::class);
@@ -31,10 +41,27 @@ class ProductStorageTest extends TestCase
         $mock = $this
             ->getMockBuilder(EntityManagerInterface::class)
             ->disableOriginalConstructor()
+            ->disableArgumentCloning()
             ->getMock()
         ;
         if ($throw) {
-            $mock->method('persist')->willThrowException(new \RuntimeException('Persist failed'));
+            $mock
+                ->method('persist')
+                ->willThrowException(new \RuntimeException('Persist failed'))
+            ;
+        } else {
+            $mock
+                ->method('persist')
+                ->willReturnCallback(
+                    static function (Product $product) {
+                        $reflection = new \ReflectionClass($product);
+                        $property = $reflection->getProperty('id');
+                        $property->setAccessible(true);
+                        $property->setValue($product, 1);
+                        $property->setAccessible(false);
+                    }
+                )
+            ;
         }
 
         return $mock;

@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Service\Product\Validation;
 
+use App\Dto\ProductDto;
 use App\Service\Product\Validation\CreateProductDataValidationException;
 use App\Service\Product\Validation\CreateProductDataValidator;
-use App\Tests\Traits\GetProductMockTrait;
-use App\Tests\Traits\GetRequestMockTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,9 +15,6 @@ use PHPUnit\Framework\TestCase;
  */
 class CreateProductDataValidatorTest extends TestCase
 {
-    use GetProductMockTrait;
-    use GetRequestMockTrait;
-
     /**
      * @test
      * @dataProvider invalidDataProvider
@@ -27,7 +23,7 @@ class CreateProductDataValidatorTest extends TestCase
     {
         $this->expectException(CreateProductDataValidationException::class);
         $validator = new CreateProductDataValidator();
-        $validator->validate($this->getRequestMock($name, $price));
+        $validator->validate(new ProductDto($name, $price));
     }
 
     /**
@@ -37,7 +33,7 @@ class CreateProductDataValidatorTest extends TestCase
     public function shouldNotThrowExceptionOnValidData(): void
     {
         $validator = new CreateProductDataValidator();
-        $validator->validate($this->getRequestMock('test', '1.23'));
+        $validator->validate(new ProductDto('test', '1.23'));
     }
 
     public function invalidDataProvider(): ?\Generator

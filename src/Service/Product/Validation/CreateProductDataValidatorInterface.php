@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Service\Product\Validation;
 
-use Symfony\Component\HttpFoundation\Request;
+use App\Dto\ProductDto;
 
 interface CreateProductDataValidatorInterface
 {
     /**
      * @throws CreateProductDataValidationException
      */
-    public function validate(Request $request): void;
+    public function validate(ProductDto $productDto): void;
 }
