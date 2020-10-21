@@ -39,7 +39,7 @@ Date: Tue, 20 Oct 2020 21:15:56 GMT
 Content-Type: application/json
 X-Robots-Tag: noindex
 
-{"id":7,"name":"test","price":123.1}
+{"id":"7","name":"test","price":123.1}
 ```
 
 ## Running tests
@@ -52,9 +52,9 @@ Example output:
 PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
 
 Testing Project Test Suite
-.....                                                               5 / 5 (100%)
+..........................                                        26 / 26 (100%)
 
-Time: 66 ms, Memory: 10.00 MB
+Time: 88 ms, Memory: 12.00 MB
 
-OK (5 tests, 32 assertions)
+OK (26 tests, 76 assertions)
 ```

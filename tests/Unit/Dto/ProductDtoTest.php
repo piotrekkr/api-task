@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @internal
+ * @group Unit
  */
 class ProductDtoTest extends TestCase
 {
