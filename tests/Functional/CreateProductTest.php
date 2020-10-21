@@ -22,6 +22,7 @@ class CreateProductTest extends WebTestCase
 
         self::assertResponseStatusCodeSame(201);
         self::assertResponseHeaderSame('Content-Type', 'application/json');
+        self::assertResponseHeaderSame('Location', '/product/1');
         $json = \json_decode($client->getResponse()->getContent(), true, 512, \JSON_THROW_ON_ERROR);
         self::assertArrayHasKey('id', $json);
         self::assertArrayHasKey('name', $json);
