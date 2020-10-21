@@ -16,7 +16,7 @@ class ProductTest extends TestCase
     /**
      * @test
      */
-    public function toArrayReturnsArrayWithProperKeysAndValues()
+    public function toArrayReturnsArrayWithProperKeysAndValues(): void
     {
         $product = new Product();
         $product->setPrice(1.23);

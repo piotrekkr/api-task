@@ -18,9 +18,13 @@ class ProductStorage implements ProductStorageInterface
 
     public function persist(Product $product): Product
     {
-        $this->entityManager->persist($product);
-        $this->entityManager->flush();
+        try {
+            $this->entityManager->persist($product);
+            $this->entityManager->flush();
 
-        return $product;
+            return $product;
+        } catch (\Throwable $e) {
+            throw new ProductStorageException('Error while storing product: '.$e->getMessage(), 0, $e);
+        }
     }
 }
