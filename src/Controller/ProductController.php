@@ -16,7 +16,7 @@ class ProductController extends AbstractController
     /**
      * @Route("/product", name="product", methods={"POST"})
      */
-    public function upload(
+    public function create(
         Request $request,
         ProductService $productService
     ): JsonResponse {
