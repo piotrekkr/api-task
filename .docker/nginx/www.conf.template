@@ -1,0 +1,34 @@
+server {
+    listen 80;
+
+    server_name api-task;
+
+    root /var/www/public;
+
+    location / {
+        # try to serve file directly, fallback to index.php
+        try_files $uri /index.php$is_args$args;
+    }
+
+    location ~ ^/index\.php(/|$) {
+        # PHP_FPM_URI is replaced in entrypoint script with proper env variable value on container run
+        fastcgi_pass ${PHP_FPM_URI};
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+
+        # fix nginx error "upstream sent too big header while reading response header from upstream"
+        # when using profiler package
+        fastcgi_buffers  16 16k;
+        fastcgi_buffer_size  32k;
+
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+        internal;
+    }
+
+    # return 404 for all other php files not matching the front controller
+    # this prevents access to other php files you don't want to be accessible.
+    location ~ \.php$ {
+        return 404;
+    }
+}

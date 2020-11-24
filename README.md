@@ -3,8 +3,13 @@
 ## Running this project 
 
 1. install docker and docker-compose
-1. clone repository 
+1. ensure environment variables are present:
+    ```shell
+    export CONTAINER_UID=$(id -u)
+    export CONTAINER_GID=$(id -g)
     ```
+1. clone repository
+    ```shell script
     git clone git@github.com:piotrekkr/api-task.git
     cd api-task/
     ```
@@ -20,7 +25,7 @@
     ```shell script
     docker-compose exec php bin/console doctrine:schema:create
     ```
-1. application should be available at http://localhost:8888/
+1. application should be available at [localhost:8888](http://localhost:8888/)
 
 ## Creating products
 
@@ -28,7 +33,7 @@
 curl -i -X POST localhost:8888/product -d "name=test&price=123.1"
 ```
 Example output:
-```
+```text
 HTTP/1.1 201 Created
 Host: localhost:8888
 Date: Tue, 20 Oct 2020 21:15:56 GMT
@@ -48,7 +53,7 @@ X-Robots-Tag: noindex
 docker-compose exec php bin/phpunit
 ```
 Example output:
-```
+```text
 PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
 
 Testing Project Test Suite

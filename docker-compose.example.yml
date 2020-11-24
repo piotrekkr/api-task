@@ -1,23 +1,67 @@
 version: '3.5'
 
 services:
-    php:
-        build:
-            context: .
-        command: ['php', '-S', '0:8888', '-t', 'public/']
-        ports:
-            - "8888:8888"
-#        volumes:
-#            - ".:/usr/src/app"
+  php:
+    # tag image after build
+    image: api-task/php:dev
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: .docker/php/Dockerfile
+      target: dev
+      args:
+        CONTAINER_UID: "${CONTAINER_UID:?You must define env variable CONTAINER_UID}"
+        CONTAINER_GID: "${CONTAINER_GID:?You must define env variable CONTAINER_GID}"
+    depends_on:
+      # requires db service and redis
+      - db
+    env_file:
+      # WARNING!!! Do not use quotes to surround values inside env files.
+      # They will be treated by docker-compose `env_file` as part of variable value!
+      - '.env'
+    environment:
+      # xdebug configuration
+      # flip remote_enable to 1 and docker-compose up to start xdebug session
+      # its kind of bug, see here: https://bugs.xdebug.org/view.php?id=1608
+      XDEBUG_CONFIG: "remote_host=${DOCKER_HOST_IP} remote_enable=0 remote_autostart=0 idekey=PHPSTORM"
+      # server name set in PHPStorm
+      PHP_IDE_CONFIG: "serverName=api-task.docker"
+    volumes:
+      - "${HOME}/.composer/:/var/.composer/"
+      - ./:/var/www/
 
-    db:
-        image: postgres:12.0
-        volumes:
-            - db:/var/lib/postgresql/data
-        environment:
-            POSTGRES_DB: app
-            POSTGRES_USER: app
-            POSTGRES_PASSWORD: app
+  nginx:
+    # tag image after build
+    image: api-task/nginx:dev
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: .docker/nginx/Dockerfile
+      target: dev
+      args:
+        CONTAINER_UID: "${CONTAINER_UID}"
+        CONTAINER_GID: "${CONTAINER_GID}"
+    depends_on:
+      - php
+    volumes:
+      - "./public/:/var/www/public/"
+    environment:
+      # domain set by hostmanager (https://hub.docker.com/r/dkarlovi/docker-hostmanager)
+      DOMAIN_NAME: default:api-task.docker
 
+  db:
+    image: postgres:12.0
+    restart: on-failure
+    volumes:
+      # mount postgres data directory under named volume for persistence
+      - db-data:/var/lib/postgresql/data
+    environment:
+      # set postgres credentials, see https://hub.docker.com/_/postgres
+      POSTGRES_DB: app
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      DOMAIN_NAME: default:db.api-task.docker
+
+# named volumes
 volumes:
-    db:
+  db-data:
