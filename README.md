@@ -5,6 +5,9 @@
 1. install docker and docker-compose
 1. ensure environment variables are present:
     ```shell
+    export DOCKER_BUILDKIT=1
+    export DOCKER_HOST_IP=$(ip -4 addr show docker0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+    export COMPOSE_DOCKER_CLI_BUILD=1
     export CONTAINER_UID=$(id -u)
     export CONTAINER_GID=$(id -g)
     ```
