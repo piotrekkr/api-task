@@ -1,0 +1,91 @@
+name: Main Branch CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare
+        id: prep
+        run: |
+          DOCKER_IMAGE=ghcr.io/piotrekkr/api-task
+          VERSION=edge
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          fi
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            VERSION=nightly
+          fi
+          TAGS_PHP="${DOCKER_IMAGE}/php:${VERSION}"
+          TAGS_NGINX="${DOCKER_IMAGE}/nginx:${VERSION}"
+          if [[ $VERSION =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+            TAGS_PHP="$TAGS_PHP,${DOCKER_IMAGE}/php:latest"
+            TAGS_NGINX="$TAGS_NGINX,${DOCKER_IMAGE}/nginx:latest"
+          fi
+          echo ::set-output name=tags_php::${TAGS_PHP}
+          echo ::set-output name=tags_nginx::${TAGS_NGINX}
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Login to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+
+      - name: PHP - Build And Run QA
+        id: php_build_and_run_qa
+        uses: docker/build-push-action@v2
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: .docker/php/Dockerfile
+          target: qa
+
+      - name: Build Nginx
+        id: nginx_build
+        uses: docker/build-push-action@v2
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: .docker/nginx/Dockerfile
+          target: prod
+
+      - name: PHP - Build And Push
+        id: php_build_and_push
+        uses: docker/build-push-action@v2
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: .docker/php/Dockerfile
+          target: prod
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.prep.outputs.tags_php }}
+
+      - name: NGINX - Build And Push
+        id: nginx_build_and_push
+        uses: docker/build-push-action@v2
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: .docker/nginx/Dockerfile
+          target: prod
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.prep.outputs.tags_nginx }}
