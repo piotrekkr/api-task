@@ -49,8 +49,21 @@
         "symfony/polyfill-php56": "*"
     },
     "scripts": {
+        "cs:check": [
+          "php-cs-fixer fix --using-cache=no --ansi --no-interaction --allow-risky=yes --dry-run"
+        ],
         "cs:fix": [
-            "php-cs-fixer fix --using-cache=no --ansi --no-interaction --allow-risky=yes"
+          "php-cs-fixer fix --using-cache=no --ansi --no-interaction --allow-risky=yes"
+        ],
+        "cs:diff": [
+          "php-cs-fixer fix --using-cache=no --ansi --no-interaction --allow-risky=yes --diff"
+        ],
+        "tests:run": [
+          "bin/phpunit"
+        ],
+        "qa:run": [
+          "@cs:check",
+          "@tests:run"
         ],
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
