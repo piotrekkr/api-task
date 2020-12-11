@@ -12,27 +12,27 @@
     export CONTAINER_GID=$(id -g)
     ```
 1. clone repository
-    ```shell script
+    ```shell
     git clone git@github.com:piotrekkr/api-task.git
     cd api-task/
     ```
 1. copy example compose file
-    ```shell script
+    ```shell
     cp docker-compose.example.yml docker-compose.yml
     ```
 1. run containers
-    ```shell script
+    ```shell
     docker-compose up -d
     ```
 1. crate db schema
-    ```shell script
+    ```shell
     docker-compose exec php bin/console doctrine:schema:create
     ```
 1. application should be available at [localhost:8888](http://localhost:8888/)
 
 ## Creating products
 
-```shell script
+```shell
 curl -i -X POST localhost:8888/product -d "name=test&price=123.1"
 ```
 Example output:
@@ -50,10 +50,23 @@ X-Robots-Tag: noindex
 {"id":"7","name":"test","price":123.1}
 ```
 
-## Running tests
+## Running QA tasks
 
-```shell script
-docker-compose exec php bin/phpunit
+To run all checks:
+```shell
+docker-compose exec composer qa:run
+```
+
+### Checking code style
+
+```shell
+docker-compose exec composer cs:check
+```
+
+### Running tests
+
+```shell
+docker-compose exec composer tests:run
 ```
 Example output:
 ```text

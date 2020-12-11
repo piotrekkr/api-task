@@ -46,9 +46,6 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 CMD [ "php-fpm" ]
 
-# wait for services
-ENV WAIT_FOR_SERVICES "1"
-
 ####################
 #### PROD BUILD ####
 ####################
@@ -86,11 +83,11 @@ ENV APP_VERSION="${APP_VERSION}"
 ####################
 FROM prod as qa
 
-# install composer dev dependencies for QA checks
+# install composer dev dependencies QA checks
 RUN composer install --prefer-dist --no-suggest --no-cache --optimize-autoloader --no-scripts --no-progress
 
-# turn off waiting for other services
-ENV WAIT_FOR_SERVICES "0"
+# run qa chacks
+RUN composer qa:run
 
 ####################
 #### DEV BUILD #####

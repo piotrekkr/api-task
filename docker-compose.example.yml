@@ -15,11 +15,8 @@ services:
     depends_on:
       # requires db service and redis
       - db
-    env_file:
-      # WARNING!!! Do not use quotes to surround values inside env files.
-      # They will be treated by docker-compose `env_file` as part of variable value!
-      - '.env'
     environment:
+      WAIT_FOR_SERVICES: "${DATABASE_URL}"
       # xdebug configuration
       # flip remote_enable to 1 and docker-compose up to start xdebug session
       # its kind of bug, see here: https://bugs.xdebug.org/view.php?id=1608
@@ -44,7 +41,7 @@ services:
     depends_on:
       - php
     volumes:
-      - "./public/:/var/www/public/"
+      - "./:/var/www"
     environment:
       # domain set by hostmanager (https://hub.docker.com/r/dkarlovi/docker-hostmanager)
       DOMAIN_NAME: default:api-task.docker

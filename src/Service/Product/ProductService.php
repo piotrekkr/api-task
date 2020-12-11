@@ -20,8 +20,7 @@ class ProductService implements ProductServiceInterface
     public function __construct(
         ProductStorageInterface $productStorage,
         CreateProductDataValidatorInterface $createValidator
-    )
-    {
+    ) {
         $this->storage = $productStorage;
         $this->createValidator = $createValidator;
     }
